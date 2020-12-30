@@ -37,7 +37,7 @@ const SIDFilterControl = SIDBase+$17 ; voice mask, resonance
 const SIDVolumeFilterMode = SIDBase+$18 ; volume, filter mode
 
 ; Player Customization
-const bsPlayerTempo = 12	; default tempo, in frames per tracker step
+const bsPlayerTempo = 6	; default tempo, in frames per tracker step
 
 const bsZeroPagePtr = $fe	; 2 byte pointer must be zero page
 const bsByteTmp = $fd		; 1 byte temp storage, doesn't have to be zero page
@@ -62,8 +62,8 @@ const bsPulseCache = bsPulseDeltaSupport
 const bsFilterSupport = 1 || bsFilterDeltaSupport
 
 ; Hard coded constants
-const bsMusicVoices = 2 	; # voices controlled by tracks & patterns
-const bsSFXVoices = 1 		; # voices reserved for SFX (no tracks & pattern control)
+const bsMusicVoices = 3 	; # voices controlled by tracks & patterns
+const bsSFXVoices = 0 		; # voices reserved for SFX (no tracks & pattern control)
 const bsNumVoices = bsMusicVoices + bsSFXVoices ; # voices that can play instruments
 
 const bsMaxInstruments = 32	; # instrument slots in track command (can be changed)
