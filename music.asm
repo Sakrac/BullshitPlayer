@@ -30,7 +30,7 @@
 // let me know via https://github.com/sakrak/bullshitplayer
 // 
 
-include music.inc
+.import source "music.inc"
 
 // SONG VARIABLES
 // Initialize: set all to 0 except set bsTrackerTempoWait and bsPatternVoiceWait to 1, bsVolume to 15
@@ -71,7 +71,7 @@ bsFilterMode:
 bsFilterResonanceVoiceEnable:
 .if (bsFilterSupport!=0) { .fill 1, 0 } // lo 3 bits: voice filter enable, upper 4 bits: resonance
 bsFilterDelta:
-.if (bsFilterDeltaSuppor!=0) { .fill 1, 0 }	// signed byte delta value
+.if (bsFilterDeltaSupport!=0) { .fill 1, 0 }	// signed byte delta value
 
 bsVoiceArpeggioIndex:
 .if (bsArpeggioSupport!=0) { .fill bsNumVoices,0 }	// last played note on channel
@@ -559,7 +559,7 @@ notInstrument:
 		tax
 		lda (bsZPPattern),y
 		iny
-		sty .restorePatternIndex
+		sty restorePatternIndex
 		tay
 		dey
 		lda FreqTablePalLo,y

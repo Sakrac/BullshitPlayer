@@ -205,7 +205,7 @@ bsCmd: {
 	NotesEnd,
 	Instrument = bsCmd.NotesEnd, // change instrument for this voice
 	ChangeNote = bsCmd.Instrument + bsMaxInstruments, // Change note without restarting instrument
-	Wait_1,
+	Wait_1
 }
 }
 
@@ -225,7 +225,7 @@ bsInst: {
 	FilterMode,			// Filter mode, followed by $10 (lo), $20 (band), $40 (high)
 	FilterDelta,		// Set Filter Frequency Delta followed by signed byte
 	Arpeggio,			// Set arpeggio index for instrument
-	Goto,				// Followed by intrument index
+	Goto				// Followed by intrument index
 }
 }
 
@@ -234,59 +234,59 @@ bsInst: {
 .function bsPatternNum(track) { (*-track)>>1 }
 
 .macro bsSetInstrument(instrument) {
-	dc.b bsCmd.Instrument + instrument
+	.byte bsCmd.Instrument + instrument
 }
 .macro bsPatternWait(frames) {
-	dc.b bsCmd.Wait_1 + frames-1
+	.byte bsCmd.Wait_1 + frames-1
 }
 .macro bsPatternEnd() {
-	dc.b bsCmd.End
+	.byte bsCmd.End
 }
 .macro bsNote(note) {
-	dc.b note
+	.byte note
 }
 .macro bsInstEnd() {
-	dc.b bsInst.End
+	.byte bsInst.End
 }
 .macro bsInstWait(frames) {
-	dc.b bsInst.Wait_1 + frames - 1
+	.byte bsInst.Wait_1 + frames - 1
 }
 .macro bsInstGoto(instrument, where) {
-	dc.b bsInst.Goto, where - instrument
+	.byte bsInst.Goto, where - instrument
 }
 
 
 .macro bsInstSetup(waveform, Attack, Decay, Sustain, Release) {
-	dc.b bsCtrl.VoiceOn | waveform, (Attack<<4)|Decay, (Sustain<<4)|Release
+	.byte bsCtrl.VoiceOn | waveform, (Attack<<4)|Decay, (Sustain<<4)|Release
 }
 .macro bsInstControl(value) {
-	dc.b bsInst.Control, value
+	.byte bsInst.Control, value
 }
 .macro bsInstSetPulse(pulse) {
-	dc.b bsInst.Pulse
-	dc.w pulse
+	.byte bsInst.Pulse
+	.word pulse
 }
 .macro bsChangeNote(note) {
-	dc.b bsCmd.ChangeNote, note
+	.byte bsCmd.ChangeNote, note
 }
 .macro bsInstSetFilterCutoff(freq) {
-	dc.b bsInst.FilterCutoff, freq
+	.byte bsInst.FilterCutoff, freq
 }
 .macro bsInstSetFilterResonance(res) {
-	dc.b bsInst.FilterResonance, res
+	.byte bsInst.FilterResonance, res
 }
 .macro bsInstFilterEnable() {
-	dc.b bsInst.FinterEnable
+	.byte bsInst.FinterEnable
 }
 .macro bsInstSetFilterMode(mode) {
-	dc.b bsInst.FilterMode, mode
+	.byte bsInst.FilterMode, mode
 }
 .macro bsInstFilterDelta(delta) {
-	dc.b bsInst.FilterDelta, delta
+	.byte bsInst.FilterDelta, delta
 }
 .macro bsInstArpeggio(index) {
-	dc.b bsInst.Arpeggio, index
+	.byte bsInst.Arpeggio, index
 }
 .macro bsInstPulseDelta(delta) {
-	dc.b bsInst.PulseDelta, delta
+	.byte bsInst.PulseDelta, delta
 }
