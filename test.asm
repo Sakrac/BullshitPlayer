@@ -25,4 +25,4 @@ wait:
 .import source "music.asm"
 
 // and the music included right after
-.import source "example.s"
+.import source "example.asm"

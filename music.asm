@@ -30,7 +30,8 @@
 // let me know via https://github.com/sakrak/bullshitplayer
 // 
 
-.import source "music.inc"
+// Include this if building this file separately
+// .import source "music.inc"
 
 // SONG VARIABLES
 // Initialize: set all to 0 except set bsTrackerTempoWait and bsPatternVoiceWait to 1, bsVolume to 15
