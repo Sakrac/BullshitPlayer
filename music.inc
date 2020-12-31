@@ -1,38 +1,38 @@
-; Bullshit Music and SFX Player
-;
-; MIT License
-; 
-; Copyright (c) 2020 Carl-Henrik Skårstedt / Space Moguls Games
-; 
-; Permission is hereby granted, free of charge, to any person obtaining a copy
-; of this software and associated documentation files (the "Software"), to deal
-; in the Software without restriction, including without limitation the rights
-; to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-; copies of the Software, and to permit persons to whom the Software is
-; furnished to do so, subject to the following conditions:
-; 
-; The above copyright notice and this permission notice shall be included in all
-; copies or substantial portions of the Software.
-; 
-; THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-; IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-; FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-; AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-; LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-; OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-; SOFTWARE.
+// Bullshit Music and SFX Player
+//
+// MIT License
+// 
+// Copyright (c) 2020 Carl-Henrik Skårstedt / Space Moguls Games
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
 
-;
-; Kick Assembler Version
-; ----------------------
-; This version is the same as the x65 version but with Kick Assembler
-; syntax. It has not been tested, if anyone has time to try it please
-; let me know via https://github.com/sakrak/bullshitplayer
-; 
+//
+// Kick Assembler Version
+// ----------------------
+// This version is the same as the x65 version but with Kick Assembler
+// syntax. It has not been tested, if anyone has time to try it please
+// let me know via https://github.com/sakrak/bullshitplayer
+// 
 
 .const MUSIC_INC = 1
 
-; SID registers
+// SID registers
 .const SIDBase = $d400
 .const SIDFrequency = SIDBase
 .const SIDPulse = SIDBase+2
@@ -40,66 +40,72 @@
 .const SIDAttackDecay = SIDBase+5
 .const SIDSustainRelease = SIDBase+6
 
-.const SIDFilterCutoff = SIDBase+$15 ; 3 + 8 bits
-.const SIDFilterControl = SIDBase+$17 ; voice mask, resonance
-.const SIDVolumeFilterMode = SIDBase+$18 ; volume, filter mode
+.const SIDFilterCutoff = SIDBase+$15 // 3 + 8 bits
+.const SIDFilterControl = SIDBase+$17 // voice mask, resonance
+.const SIDVolumeFilterMode = SIDBase+$18 // volume, filter mode
 
-; Player Customization
-.const bsPlayerTempo = 6	; default tempo, in frames per tracker step
+// Player Customization
+.const bsPlayerTempo = 6	// default tempo, in frames per tracker step
 
-.const bsZeroPagePtr = $fe	; 2 byte pointer must be zero page
-.const bsByteTmp = $fd		; 1 byte temp storage, doesn't have to be zero page
+.const bsZeroPagePtr = $fe	// 2 byte pointer must be zero page
+.const bsByteTmp = $fd		// 1 byte temp storage, doesn't have to be zero page
 
-.const bsZPPattern = bsZeroPagePtr		; pointer current pattern for current voice
-.const bsZPInstrument = bsZeroPagePtr	; pointer current instrument for current voice
-.const bsTmpSaveVoice = bsByteTmp		; save voice # when updating SID regs
+.const bsZPPattern = bsZeroPagePtr		// pointer current pattern for current voice
+.const bsZPInstrument = bsZeroPagePtr	// pointer current instrument for current voice
+.const bsTmpSaveVoice = bsByteTmp		// save voice # when updating SID regs
 
-; Flags to enable/disable features
-.const bsPulseDeltaSupport = 0			; enables bsInst.PulseDelta instrument command
-.const bsArpeggioSupport = 0				; enables bsInst.Arpeggio instrument command and requires an ArpeggioTable to be defined
-.const bsFilterDeltaSupport = 0			; enables bsInst.FilterDelta instrument command
-.const bsChangeNoteSupport = 0			; enables bsCmd.ChangeNote track command (changes note without restarting instrument)
+// Flags to enable/disable features
+.const bsPulseDeltaSupport = 0			// enables bsInst.PulseDelta instrument command
+.const bsArpeggioSupport = 0				// enables bsInst.Arpeggio instrument command and requires an ArpeggioTable to be defined
+.const bsFilterDeltaSupport = 0			// enables bsInst.FilterDelta instrument command
+.const bsChangeNoteSupport = 0			// enables bsCmd.ChangeNote track command (changes note without restarting instrument)
 
-; remember last set frequency for slide/vibrato etc
+// remember last set frequency for slide/vibrato etc
 .const bsFreqCache = 0
-; remember last set note for arpeggio
+// remember last set note for arpeggio
 .const bsNoteCache = bsArpeggioSupport
-; 1: Remember lsat pulse width for pulse slide etc.
+// 1: Remember lsat pulse width for pulse slide etc.
 .const bsPulseCache = bsPulseDeltaSupport
-; using filters
+// using filters
 .const bsFilterSupport = 1 || bsFilterDeltaSupport
 
-; Hard coded constants
-.const bsMusicVoices = 3 	; # voices controlled by tracks & patterns
-.const bsSFXVoices = 0 		; # voices reserved for SFX (no tracks & pattern control)
-.const bsNumVoices = bsMusicVoices + bsSFXVoices ; # voices that can play instruments
+// Hard coded constants
+.const bsMusicVoices = 3 	// # voices controlled by tracks & patterns
+.const bsSFXVoices = 0 		// # voices reserved for SFX (no tracks & pattern control)
+.const bsNumVoices = bsMusicVoices + bsSFXVoices // # voices that can play instruments
 
-.const bsMaxInstruments = 32	; # instrument slots in track command (can be changed)
-.const bsMaxWaitSteps = 64	; # of pattern steps a pattern can wait (can be changed)
-.const bsMaxInstrumentWait = 192 ; Max frames wait time for instruments
+.const bsMaxInstruments = 32	// # instrument slots in track command (can be changed)
+.const bsMaxWaitSteps = 64	// # of pattern steps a pattern can wait (can be changed)
+.const bsMaxInstrumentWait = 192 // Max frames wait time for instruments
 
-.enum bsCtrl {				; SID Control register bits
-	VoiceOn = 1,			; AKA Gate
+bsCtrl:
+{
+.enum {						// SID Control register bits
+	VoiceOn = 1,			// AKA Gate
 	SyncOn = 2,
 	RingOn = 4,
 	Disable = 8,
-	Triangle = 16,			; Set Triangle Waveform
-	SawTooth = 32,			; Set SawTooth Waveform
-	Rectangle = 64,			; Set Rectangle Waveform, uses the Pulse register
-	Noise = 128				; Set Noise Waveform
+	Triangle = 16,			// Set Triangle Waveform
+	SawTooth = 32,			// Set SawTooth Waveform
+	Rectangle = 64,			// Set Rectangle Waveform, uses the Pulse register
+	Noise = 128				// Set Noise Waveform
+}
 }
 
-; Filter types, used with bsInst
-.enum bsFilter {				; use with bsInstSetFilterMode .macro
+// Filter types, used with bsInst
+bsFilter: {
+.enum {				// use with bsInstSetFilterMode .macro
 	LowPass = $10,
 	BandPass = $20,
 	HighPass = $40
 }
+}
 
-; pattern commands (unused notes can be removed as long as FreqTablePalLo & FreqTablePalHi matches with order)
-.enum bsCmd {
-	End,	; end pattern / 
-	Notes, ; start of notes
+// pattern commands (unused notes can be removed as long as FreqTablePalLo & FreqTablePalHi matches with order)
+bsCmd: {
+.enum {
+	End,	// end pattern / 
+	Notes, // start of notes
 	C_1 = bsCmd.Notes,
 	Cs1,
 	D_1,
@@ -197,30 +203,33 @@
 	As8,
 	B_8,
 	NotesEnd,
-	Instrument = bsCmd.NotesEnd, ; change instrument for this voice
-	ChangeNote = bsCmd.Instrument + bsMaxInstruments, ; Change note without restarting instrument
+	Instrument = bsCmd.NotesEnd, // change instrument for this voice
+	ChangeNote = bsCmd.Instrument + bsMaxInstruments, // Change note without restarting instrument
 	Wait_1,
 }
-
-; Instrument Commands
-.enum bsInst {
-	End,				; end of instrument script
-	Wait_1,				; want # frames
-	Effects = bsMaxInstrumentWait, ; instrument effects begin here
-	Control = bsInst.Effects, ; Control, use for waveform and to trigger release
-	Pulse,				; Followed by two bytes pulse width
-	PulseDelta,			; Followed by signed byte pulse delta
-	FilterCutoff,		; Set filter cut off frequency bits 3-11
-	FilterResonance,	; Set filter resonance, followed by preshifted byte
-	FilterEnable,		; Enable filter for voice
-	FilterDisable,		; Disable filter for voice
-	FilterMode,			; Filter mode, followed by $10 (lo), $20 (band), $40 (high)
-	FilterDelta,		; Set Filter Frequency Delta followed by signed byte
-	Arpeggio,			; Set arpeggio index for instrument
-	Goto,				; Followed by intrument index
 }
 
-; SONG FUNCTIONS AND MACROS
+// Instrument Commands
+bsInst: {
+.enum {
+	End,				// end of instrument script
+	Wait_1,				// want # frames
+	Effects = bsMaxInstrumentWait, // instrument effects begin here
+	Control = bsInst.Effects, // Control, use for waveform and to trigger release
+	Pulse,				// Followed by two bytes pulse width
+	PulseDelta,			// Followed by signed byte pulse delta
+	FilterCutoff,		// Set filter cut off frequency bits 3-11
+	FilterResonance,	// Set filter resonance, followed by preshifted byte
+	FilterEnable,		// Enable filter for voice
+	FilterDisable,		// Disable filter for voice
+	FilterMode,			// Filter mode, followed by $10 (lo), $20 (band), $40 (high)
+	FilterDelta,		// Set Filter Frequency Delta followed by signed byte
+	Arpeggio,			// Set arpeggio index for instrument
+	Goto,				// Followed by intrument index
+}
+}
+
+// SONG FUNCTIONS AND MACROS
 
 .function bsPatternNum(track) { (*-track)>>1 }
 
@@ -257,12 +266,12 @@
 	dc.b bsInst.Pulse
 	dc.w pulse
 }
-if bsChangeNoteSupport
+.if (bsChangeNoteSupport!=0)
 .macro bsChangeNote(note) {
 	dc.b bsCmd.ChangeNote, note
 }
-endif
-if bsFilterSupport
+}
+.if (bsFilterSupport!=0) {
 .macro bsInstSetFilterCutoff(freq) {
 	dc.b bsInst.FilterCutoff, freq
 }
@@ -275,20 +284,19 @@ if bsFilterSupport
 .macro bsInstSetFilterMode(mode) {
 	dc.b bsInst.FilterMode, mode
 }
-if bsFilterDeltaSupport
+.if (bsFilterDeltaSupport!=0) {
 .macro bsInstFilterDelta(delta) {
 	dc.b bsInst.FilterDelta, delta
 }
-endif
-endif
-if bsArpeggioSupport
+}
+}
+.if (bsArpeggioSupport!=0) {
 .macro bsInstArpeggio(index) {
 	dc.b bsInst.Arpeggio, index
 }
-endif
-if bsPulseDeltaSupport
+}
+.if (bsPulseDeltaSupport!=0) {
 .macro bsInstPulseDelta(delta) {
 	dc.b bsInst.PulseDelta, delta
 }
-endif
-
+}
