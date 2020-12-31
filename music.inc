@@ -266,12 +266,9 @@ bsInst: {
 	dc.b bsInst.Pulse
 	dc.w pulse
 }
-.if (bsChangeNoteSupport!=0)
 .macro bsChangeNote(note) {
 	dc.b bsCmd.ChangeNote, note
 }
-}
-.if (bsFilterSupport!=0) {
 .macro bsInstSetFilterCutoff(freq) {
 	dc.b bsInst.FilterCutoff, freq
 }
@@ -284,19 +281,12 @@ bsInst: {
 .macro bsInstSetFilterMode(mode) {
 	dc.b bsInst.FilterMode, mode
 }
-.if (bsFilterDeltaSupport!=0) {
 .macro bsInstFilterDelta(delta) {
 	dc.b bsInst.FilterDelta, delta
 }
-}
-}
-.if (bsArpeggioSupport!=0) {
 .macro bsInstArpeggio(index) {
 	dc.b bsInst.Arpeggio, index
 }
-}
-.if (bsPulseDeltaSupport!=0) {
 .macro bsInstPulseDelta(delta) {
 	dc.b bsInst.PulseDelta, delta
-}
 }

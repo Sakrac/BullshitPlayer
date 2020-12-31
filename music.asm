@@ -47,47 +47,34 @@ bsVoiceInstrument: 		// current instrument for each voice
 bsVoiceTriggerNote: 	// 0 or instrument+1 to trigger
 	.fill bsNumVoices, 0
 
-.if (bsFreqCache!=0) {
 bsVoiceFreqLo:			// frequency for each voice
-	.fill bsNumVoices, 0
+.if (bsFreqCache!=0) { .fill bsNumVoices, 0 }
 bsVoiceFreqHi:
-	.fill bsNumVoices, 0
-}
+.if (bsFreqCache!=0) { .fill bsNumVoices, 0 }
 
-.if (bsNoteCache!=0) {
 bsVoiceNote:
-	.fill bsNumVoices, 0
-}
+.if (bsNoteCache!=0) { .fill bsNumVoices, 0 }
 
-.if (bsPulseCache!=0) {
 bsVoicePulseLo:
-	.fill bsNumVoices, 0
+.if (bsPulseCache!=0) { .fill bsNumVoices, 0 }
 bsVoicePulseHi:
-	.fill bsNumVoices, 0
-}
+.if (bsPulseCache!=0) { .fill bsNumVoices, 0 }
 
-.if (bsPulseDeltaSupport!=0) {
 bsVoicePulseDelta:
-	.fill bsNumVoices, 0
-}
+.if (bsPulseDeltaSupport!=0) { .fill bsNumVoices, 0 }
 
-.if (bsFilterSupport!=0) {
+
 bsFilterFreq:
-	.fill 2, 0				// lower 3 bits, upper 8 bits
+.if (bsFilterSupport!=0) { .fill 2, 0 }	// lower 3 bits, upper 8 bits
 bsFilterMode:
-	.fill 1, 0
+.if (bsFilterSupport!=0) { .fill 1, 0 }
 bsFilterResonanceVoiceEnable:
-	.fill 1, 0				// lo 3 bits: voice filter enable, upper 4 bits: resonance
-.if (bsFilterDeltaSuppor!=0) {
+.if (bsFilterSupport!=0) { .fill 1, 0 } // lo 3 bits: voice filter enable, upper 4 bits: resonance
 bsFilterDelta:
-	.fill 1, 0				// signed byte delta value
-}
-}
+.if (bsFilterDeltaSuppor!=0) { .fill 1, 0 }	// signed byte delta value
 
-.if (bsArpeggioSupport!=0) {
 bsVoiceArpeggioIndex:
-	.fill bsNumVoices,0	// last played note on channel
-}
+.if (bsArpeggioSupport!=0) { .fill bsNumVoices,0 }	// last played note on channel
 
 bsVoiceInstrumentIndex:	// where in the instrument script we are currently
 	.fill bsNumVoices, 0	// 0 means instrument ended
@@ -147,7 +134,7 @@ UpdateMusicPlayer:
 	// Check Trigger Note
 	ldx #2
 	{
-loop:
+loopTrigNote:
 		lda bsVoiceTriggerNote,x
 		beq escTrigNote
 		bpl play
@@ -161,7 +148,7 @@ play:	stx restoreX
 		sta bsVoiceTriggerNote,x
 escTrigNote:
 		dex
-		bpl loop
+		bpl loopTrigNote
 	}
 
 	// Step Patterns and Tracks
@@ -174,9 +161,10 @@ escTrigNote:
 
 		// Update all tracks
 		ldx #bsMusicVoices-1	// only update tracker voices
-loop:	jsr bsUpdateTrackerVoice
+loopTrackerVoice:
+		jsr bsUpdateTrackerVoice
 		dex
-		bpl loop
+		bpl loopTrackerVoice
 escTrackerUpdate:
 	}
 
@@ -188,19 +176,22 @@ escTrackerUpdate:
 		adc bsFilterFreq+1
 		sta bsFilterFreq+1
 		sta SIDFilterCutoff+1
-escFilterDelta:
 }
+escFilterDelta:
 	// Update instruments
 	
 	ldx #bsNumVoices-1	// update all managed voices
 	{
-loop:
+loopUpdateVoice:
 .if (bsPulseDeltaSupport!=0) {
 			lda bsVoicePulseDelta,x
 			beq escPulseDelta
 			bpl pos
 			dec bsVoicePulseHi,x
-pos:		ldy bsSIDVoiceRegOffs,x
+}
+pos:
+.if (bsPulseDeltaSupport!=0) {
+			ldy bsSIDVoiceRegOffs,x
 			clc
 			adc bsVoicePulseLo,x
 			sta bsVoicePulseLo,x
@@ -209,10 +200,12 @@ pos:		ldy bsSIDVoiceRegOffs,x
 			adc #0
 			sta bsVoicePulseHi,x
 			sta SIDPulse+1,y
-escPulseDelta:
 }
+escPulseDelta:
+
+restart:
 .if (bsArpeggioSupport!=0) {
-restart:	ldy bsVoiceArpeggioIndex,x
+			ldy bsVoiceArpeggioIndex,x
 			beq escArpeggio
 			lda ArpeggioTable,y
 			cmp #-1
@@ -221,7 +214,10 @@ restart:	ldy bsVoiceArpeggioIndex,x
 			lda ArpeggioTable,y
 			sta bsVoiceArpeggioIndex,x
 			jmp restart
-notArpJmp:	inc bsVoiceArpeggioIndex,x
+}
+notArpJmp:
+.if (bsArpeggioSupport!=0) {
+			inc bsVoiceArpeggioIndex,x
 			clc
 			adc bsVoiceNote,x
 			tay
@@ -232,23 +228,21 @@ notArpJmp:	inc bsVoiceArpeggioIndex,x
 			sta SIDFrequency,y
 			pla
 			sta SIDFrequency+1,y
-escArpeggio:
 }
-		{
-			// bsVoiceInstrumentWait = 0 => Sound End
-			lda bsVoiceInstrumentWait,x
-			beq escInstrument	// already 0 -> end command reached
-			dec bsVoiceInstrumentWait,x
-			bne escInstrument	// reached 0 -> finished waiting
-			jsr bsGetCurrentInstrument
-			ldy bsVoiceInstrumentIndex,x
-			lda bsSIDVoiceRegOffs,x
-			tax
-			jsr bsUpdateInstrumentCommands
+escArpeggio:
+		// bsVoiceInstrumentWait = 0 => Sound End
+		lda bsVoiceInstrumentWait,x
+		beq escInstrument	// already 0 -> end command reached
+		dec bsVoiceInstrumentWait,x
+		bne escInstrument	// reached 0 -> finished waiting
+		jsr bsGetCurrentInstrument
+		ldy bsVoiceInstrumentIndex,x
+		lda bsSIDVoiceRegOffs,x
+		tax
+		jsr bsUpdateInstrumentCommands
 escInstrument:
-		}
 		dex
-		bpl loop
+		bpl loopUpdateVoice
 	}
 	rts
 }
@@ -350,7 +344,8 @@ bsPlayInstrument:
 bsUpdateInstrumentCommands:
 {	// loop through instrument commands until Wait or End command reached
 	{	// fetch next instrument command
-loop:	lda (bsZPInstrument),y
+loopInstrumentCommands:
+		lda (bsZPInstrument),y
 		beq end
 		iny
 		cmp #bsInst.Effects
@@ -361,7 +356,7 @@ effects:
 		lda (bsZPInstrument),y
 		iny
 		sta SIDControl,x	// KeyOff etc.
-		bne loop
+		bne loopInstrumentCommands
 notControl:
 		cmp #bsInst.Pulse
 		bne notPulse
@@ -382,7 +377,7 @@ notControl:
 		jmp resetSIDOffset
 }
 .if (bsPulseCache==0) {
-		jmp loop
+		jmp loopInstrumentCommands
 }
 notPulse:
 .if (bsPulseDeltaSupport!=0) {
@@ -393,8 +388,8 @@ notPulse:
 		iny
 		sta bsVoicePulseDelta,x
 		jmp resetSIDOffset
-notPulseDelta:
 }
+notPulseDelta:
 .if (bsFilterSupport!=0) {
 		cmp #bsInst.FilterCutoff
 		bne notFilterCutoff
@@ -405,8 +400,10 @@ notPulseDelta:
 		sta SIDFilterCutoff+1
 		sta bsFilterFreq+1	// 8 upper bits from effect param
 		iny
-		bne loop
+		bne loopInstrumentCommands
+}
 notFilterCutoff:
+.if (bsFilterSupport!=0) {
 		cmp #bsInst.FilterResonance
 		bne notFilterResonance
 		lda bsFilterResonanceVoiceEnable
@@ -415,25 +412,33 @@ notFilterCutoff:
 		sta bsFilterResonanceVoiceEnable
 		sta SIDFilterControl
 		iny
-		bne loop
+		bne loopInstrumentCommands
+}
 notFilterResonance:
+.if (bsFilterSupport!=0) {
 		cmp #bsInst.FilterEnable
 		bne notFilterEnable
 		ldx bsTmpSaveVoice
 		lda bsBitSet,x
 		ora bsFilterResonanceVoiceEnable
+}
 setSIDFilterControl:
+.if (bsFilterSupport!=0) {
 		sta bsFilterResonanceVoiceEnable
 		sta SIDFilterControl
 		jmp resetSIDOffset
+}
 notFilterEnable:
+.if (bsFilterSupport!=0) {
 		cmp #bsInst.FilterDisable
 		bne notFilterDisable
 		ldx bsTmpSaveVoice
 		lda bsBitClr,x
 		and bsFilterResonanceVoiceEnable
 		jmp setSIDFilterControl
+}
 notFilterDisable:
+.if (bsFilterSupport!=0) {
 		cmp #bsInst.FilterMode
 		bne notFilterMode
 		lda (bsZPInstrument),y
@@ -441,7 +446,8 @@ notFilterDisable:
 		ora bsVolume
 		sta SIDVolumeFilterMode
 		iny
-		jmp loop
+		jmp loopInstrumentCommands
+}
 notFilterMode:
 .if (bsFilterDeltaSupport!=0) {
 		cmp #bsInst.FilterDelta
@@ -449,10 +455,9 @@ notFilterMode:
 		lda (bsZPInstrument),y
 		sta bsFilterDelta
 		iny
-		jmp loop
+		jmp loopInstrumentCommands
+}
 notFilterDelta:
-}
-}
 .if (bsArpeggioSupport!=0) {
 		cmp #bsInst.Arpeggio
 		bne notArpeggio
@@ -461,8 +466,8 @@ notFilterDelta:
 		ldx bsTmpSaveVoice
 		sta bsVoiceArpeggioIndex,x
 		jmp resetSIDOffset
-notArpeggio:
 }
+notArpeggio:
 		cmp #bsInst.Goto
 		bne notGoto
 		ldx bsTmpSaveVoice
@@ -471,7 +476,7 @@ notArpeggio:
 resetSIDOffset:
 		lda bsSIDVoiceRegOffs,x
 		tax
-		jmp loop
+		jmp loopInstrumentCommands
 notGoto:
 		// other effects
 escInstrumentCommands:
@@ -521,7 +526,7 @@ update:
 	// current command in (bsZPPattern),y
 	// increment y and store back into bsVoicePatternIndex,x
 	{
-loop:
+loopTrackerCommands:
 		lda (bsZPPattern),y
 		bne notPatternEnd
 		inc bsVoiceTrackIndex,x
@@ -529,7 +534,7 @@ restartSong:
 		jsr bsGetCurrentPattern
 		ldy #0
 		lda bsZPPattern+1	// check if song is over & repeat
-		bne loop
+		bne loopTrackerCommands
 		lda bsZPPattern		// check if song is over & repeat
 		sta bsVoiceTrackIndex,x
 		bpl restartSong
@@ -538,13 +543,13 @@ notPatternEnd:
 		cmp #bsCmd.NotesEnd
 		bcs notNote
 		jsr bsTriggerInstrument
-		jmp loop
+		jmp loopTrackerCommands
 notNote:
 		cmp #bsCmd.ChangeNote
 		bcs notInstrument
 		sbc #bsCmd.Instrument-1 // C clear so subtract one less
 		sta bsVoiceInstrument,x
-		bcs loop
+		bcs loopTrackerCommands
 notInstrument:
 .if (bsChangeNoteSupport!=0) {
 		//cmp #bsCmd.ChangeNote
@@ -575,9 +580,9 @@ notInstrument:
 		sta bsVoiceNote,x
 } // bsNoteCache
 		ldy restorePatternIndex: #0
-		bne loop
-notChangeNote:
+		bne loopTrackerCommands
 }
+notChangeNote:
 waitCmd:
 		// C set
 		sbc #bsCmd.Wait_1-1
