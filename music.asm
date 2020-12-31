@@ -381,7 +381,7 @@ notControl:
 		sta bsVoicePulseLo,x
 		jmp resetSIDOffset
 }
-.if (bsPulseCache!==0) {
+.if (bsPulseCache==0) {
 		jmp loop
 }
 notPulse:
@@ -418,7 +418,7 @@ notFilterCutoff:
 		bne loop
 notFilterResonance:
 		cmp #bsInst.FilterEnable
-		bne .notFilterEnable
+		bne notFilterEnable
 		ldx bsTmpSaveVoice
 		lda bsBitSet,x
 		ora bsFilterResonanceVoiceEnable
@@ -428,14 +428,14 @@ setSIDFilterControl:
 		jmp resetSIDOffset
 notFilterEnable:
 		cmp #bsInst.FilterDisable
-		bne .notFilterDisable
+		bne notFilterDisable
 		ldx bsTmpSaveVoice
 		lda bsBitClr,x
 		and bsFilterResonanceVoiceEnable
 		jmp setSIDFilterControl
 notFilterDisable:
 		cmp #bsInst.FilterMode
-		bne .notFilterMode
+		bne notFilterMode
 		lda (bsZPInstrument),y
 		sta bsFilterMode
 		ora bsVolume
@@ -445,7 +445,7 @@ notFilterDisable:
 notFilterMode:
 .if (bsFilterDeltaSupport!=0) {
 		cmp #bsInst.FilterDelta
-		bne .notFilterDelta
+		bne notFilterDelta
 		lda (bsZPInstrument),y
 		sta bsFilterDelta
 		iny
