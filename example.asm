@@ -72,16 +72,16 @@ VoiceTracksHi:
 VoiceTrack0:
 	.word Pattern00
 	.word Pattern10
-	.word 0 ; restart on first pattern
+	.word 0 // restart on first pattern
 
 VoiceTrack1:
 	.word Pattern01
-	.word 0 ; restart on first pattern
+	.word 0 // restart on first pattern
 
 VoiceTrack2:
 	.word Pattern02
 	.word Pattern12
-	.word 0 ; restart on first pattern
+	.word 0 // restart on first pattern
 
 
 Pattern00:

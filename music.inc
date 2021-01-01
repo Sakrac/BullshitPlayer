@@ -100,7 +100,7 @@
 .enum {
 	bsCmd_End,	// end pattern / 
 	bsCmd_Notes, // start of notes
-	bsCmd_C_1 = bsCmd_Notes,
+	bsCmd_C_1 = 1,	// 0 is end
 	bsCmd_Cs1,
 	bsCmd_D_1,
 	bsCmd_Ds1,
@@ -196,9 +196,8 @@
 	bsCmd_A_8,
 	bsCmd_As8,
 	bsCmd_B_8,
-	bsCmd_NotesEnd,
-	bsCmd_Instrument = bsCmd_NotesEnd, // change instrument for this voice
-	bsCmd_ChangeNote = bsCmd_Instrument + bsMaxInstruments, // Change note without restarting instrument
+	bsCmd_Instrument, // change instrument for this voice
+	bsCmd_ChangeNote = 129, // 1+number of notes+number of instruments Change note without restarting instrument
 	bsCmd_Wait_1
 }
 
@@ -206,8 +205,8 @@
 .enum {
 	bsInst_End,				// end of instrument script
 	bsInst_Wait_1,				// want # frames
-	bsInst_Effects = bsMaxInstrumentWait, // instrument effects begin here
-	bsInst_Control = bsInst_Effects, // Control, use for waveform and to trigger release
+	bsInst_Effects = 192, // (max instrument wait) instrument effects begin here
+	bsInst_Control = 192, // Control, use for waveform and to trigger release
 	bsInst_Pulse,				// Followed by two bytes pulse width
 	bsInst_PulseDelta,			// Followed by signed byte pulse delta
 	bsInst_FilterCutoff,		// Set filter cut off frequency bits 3-11
