@@ -3,11 +3,11 @@
 
 org $801
 
-; 1 SYS 2064
+// 1 SYS 2064
 dc.b $0b, $08, $01, $00, $9e, $32, $30, $36, $34, $00, $00, $00, $00, $00, $00
 
 RunTest:
-	lda #$f	; set volume
+	lda #$f	// set volume
 	sta $d418
 frame:
 	lda #100
