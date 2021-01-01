@@ -222,8 +222,6 @@
 
 // SONG FUNCTIONS AND MACROS
 
-.function bsPatternNum(track) { (*-track)>>1 }
-
 .macro bsSetInstrument(instrument) {
 	.byte bsCmd_Instrument + instrument
 }
