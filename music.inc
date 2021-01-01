@@ -267,7 +267,7 @@
 	.byte bsInst_FilterResonance, res
 }
 .macro bsInstFilterEnable() {
-	.byte bsInst_FinterEnable
+	.byte bsInst_FilterEnable
 }
 .macro bsInstSetFilterMode(mode) {
 	.byte bsInst_FilterMode, mode
