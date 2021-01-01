@@ -12,8 +12,8 @@ RunTest:
 frame:
 	lda #100
 wait:
-		cmp $d012
-		bne wait
+	cmp $d012
+	bne wait
 	lda #4
 	sta $d020
 	jsr UpdateMusicPlayer

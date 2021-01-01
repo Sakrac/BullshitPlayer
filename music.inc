@@ -55,10 +55,10 @@
 .const bsTmpSaveVoice = bsByteTmp		// save voice # when updating SID regs
 
 // Flags to enable/disable features
-.const bsPulseDeltaSupport = 0			// enables bsInst.PulseDelta instrument command
-.const bsArpeggioSupport = 0				// enables bsInst.Arpeggio instrument command and requires an ArpeggioTable to be defined
-.const bsFilterDeltaSupport = 0			// enables bsInst.FilterDelta instrument command
-.const bsChangeNoteSupport = 0			// enables bsCmd.ChangeNote track command (changes note without restarting instrument)
+.const bsPulseDeltaSupport = 0			// enables bsInst_PulseDelta instrument command
+.const bsArpeggioSupport = 0				// enables bsInst_Arpeggio instrument command and requires an ArpeggioTable to be defined
+.const bsFilterDeltaSupport = 0			// enables bsInst_FilterDelta instrument command
+.const bsChangeNoteSupport = 0			// enables bsCmd_ChangeNote track command (changes note without restarting instrument)
 
 // remember last set frequency for slide/vibrato etc
 .const bsFreqCache = 0
@@ -78,155 +78,146 @@
 .const bsMaxWaitSteps = 64	// # of pattern steps a pattern can wait (can be changed)
 .const bsMaxInstrumentWait = 192 // Max frames wait time for instruments
 
-bsCtrl:
-{
 .enum {						// SID Control register bits
-	VoiceOn = 1,			// AKA Gate
-	SyncOn = 2,
-	RingOn = 4,
-	Disable = 8,
-	Triangle = 16,			// Set Triangle Waveform
-	SawTooth = 32,			// Set SawTooth Waveform
-	Rectangle = 64,			// Set Rectangle Waveform, uses the Pulse register
-	Noise = 128				// Set Noise Waveform
-}
+	bsCtrl_VoiceOn = 1,			// AKA Gate
+	bsCtrl_SyncOn = 2,
+	bsCtrl_RingOn = 4,
+	bsCtrl_Disable = 8,
+	bsCtrl_Triangle = 16,			// Set Triangle Waveform
+	bsCtrl_SawTooth = 32,			// Set SawTooth Waveform
+	bsCtrl_Rectangle = 64,			// Set Rectangle Waveform, uses the Pulse register
+	bsCtrl_Noise = 128				// Set Noise Waveform
 }
 
 // Filter types, used with bsInst
-bsFilter: {
 .enum {				// use with bsInstSetFilterMode .macro
-	LowPass = $10,
-	BandPass = $20,
-	HighPass = $40
-}
+	bsFilter_LowPass = $10,
+	bsFilter_BandPass = $20,
+	bsFilter_HighPass = $40
 }
 
 // pattern commands (unused notes can be removed as long as FreqTablePalLo & FreqTablePalHi matches with order)
-bsCmd: {
 .enum {
-	End,	// end pattern / 
-	Notes, // start of notes
-	C_1 = bsCmd.Notes,
-	Cs1,
-	D_1,
-	Ds1,
-	E_1,
-	F_1,
-	Fs1,
-	G_1,
-	Gs1,
-	A_1,
-	As1,
-	B_1,
-	C_2,
-	Cs2,
-	D_2,
-	Ds2,
-	E_2,
-	F_2,
-	Fs2,
-	G_2,
-	Gs2,
-	A_2,
-	As2,
-	B_2,
-	C_3,
-	Cs3,
-	D_3,
-	Ds3,
-	E_3,
-	F_3,
-	Fs3,
-	G_3,
-	Gs3,
-	A_3,
-	As3,
-	B_3,
-	C_4,
-	Cs4,
-	D_4,
-	Ds4,
-	E_4,
-	F_4,
-	Fs4,
-	G_4,
-	Gs4,
-	A_4,
-	As4,
-	B_4,
-	C_5,
-	Cs5,
-	D_5,
-	Ds5,
-	E_5,
-	F_5,
-	Fs5,
-	G_5,
-	Gs5,
-	A_5,
-	As5,
-	B_5,
-	C_6,
-	Cs6,
-	D_6,
-	Ds6,
-	E_6,
-	F_6,
-	Fs6,
-	G_6,
-	Gs6,
-	A_6,
-	As6,
-	B_6,
-	C_7,
-	Cs7,
-	D_7,
-	Ds7,
-	E_7,
-	F_7,
-	Fs7,
-	G_7,
-	Gs7,
-	A_7,
-	As7,
-	B_7,
-	C_8,
-	Cs8,
-	D_8,
-	Ds8,
-	E_8,
-	F_8,
-	Fs8,
-	G_8,
-	Gs8,
-	A_8,
-	As8,
-	B_8,
-	NotesEnd,
-	Instrument = bsCmd.NotesEnd, // change instrument for this voice
-	ChangeNote = bsCmd.Instrument + bsMaxInstruments, // Change note without restarting instrument
-	Wait_1
-}
+	bsCmd_End,	// end pattern / 
+	bsCmd_Notes, // start of notes
+	bsCmd_C_1 = bsCmd_Notes,
+	bsCmd_Cs1,
+	bsCmd_D_1,
+	bsCmd_Ds1,
+	bsCmd_E_1,
+	bsCmd_F_1,
+	bsCmd_Fs1,
+	bsCmd_G_1,
+	bsCmd_Gs1,
+	bsCmd_A_1,
+	bsCmd_As1,
+	bsCmd_B_1,
+	bsCmd_C_2,
+	bsCmd_Cs2,
+	bsCmd_D_2,
+	bsCmd_Ds2,
+	bsCmd_E_2,
+	bsCmd_F_2,
+	bsCmd_Fs2,
+	bsCmd_G_2,
+	bsCmd_Gs2,
+	bsCmd_A_2,
+	bsCmd_As2,
+	bsCmd_B_2,
+	bsCmd_C_3,
+	bsCmd_Cs3,
+	bsCmd_D_3,
+	bsCmd_Ds3,
+	bsCmd_E_3,
+	bsCmd_F_3,
+	bsCmd_Fs3,
+	bsCmd_G_3,
+	bsCmd_Gs3,
+	bsCmd_A_3,
+	bsCmd_As3,
+	bsCmd_B_3,
+	bsCmd_C_4,
+	bsCmd_Cs4,
+	bsCmd_D_4,
+	bsCmd_Ds4,
+	bsCmd_E_4,
+	bsCmd_F_4,
+	bsCmd_Fs4,
+	bsCmd_G_4,
+	bsCmd_Gs4,
+	bsCmd_A_4,
+	bsCmd_As4,
+	bsCmd_B_4,
+	bsCmd_C_5,
+	bsCmd_Cs5,
+	bsCmd_D_5,
+	bsCmd_Ds5,
+	bsCmd_E_5,
+	bsCmd_F_5,
+	bsCmd_Fs5,
+	bsCmd_G_5,
+	bsCmd_Gs5,
+	bsCmd_A_5,
+	bsCmd_As5,
+	bsCmd_B_5,
+	bsCmd_C_6,
+	bsCmd_Cs6,
+	bsCmd_D_6,
+	bsCmd_Ds6,
+	bsCmd_E_6,
+	bsCmd_F_6,
+	bsCmd_Fs6,
+	bsCmd_G_6,
+	bsCmd_Gs6,
+	bsCmd_A_6,
+	bsCmd_As6,
+	bsCmd_B_6,
+	bsCmd_C_7,
+	bsCmd_Cs7,
+	bsCmd_D_7,
+	bsCmd_Ds7,
+	bsCmd_E_7,
+	bsCmd_F_7,
+	bsCmd_Fs7,
+	bsCmd_G_7,
+	bsCmd_Gs7,
+	bsCmd_A_7,
+	bsCmd_As7,
+	bsCmd_B_7,
+	bsCmd_C_8,
+	bsCmd_Cs8,
+	bsCmd_D_8,
+	bsCmd_Ds8,
+	bsCmd_E_8,
+	bsCmd_F_8,
+	bsCmd_Fs8,
+	bsCmd_G_8,
+	bsCmd_Gs8,
+	bsCmd_A_8,
+	bsCmd_As8,
+	bsCmd_B_8,
+	bsCmd_NotesEnd,
+	bsCmd_Instrument = bsCmd_NotesEnd, // change instrument for this voice
+	bsCmd_ChangeNote = bsCmd_Instrument + bsMaxInstruments, // Change note without restarting instrument
+	bsCmd_Wait_1
 }
 
 // Instrument Commands
-bsInst: {
 .enum {
-	End,				// end of instrument script
-	Wait_1,				// want # frames
-	Effects = bsMaxInstrumentWait, // instrument effects begin here
-	Control = bsInst.Effects, // Control, use for waveform and to trigger release
-	Pulse,				// Followed by two bytes pulse width
-	PulseDelta,			// Followed by signed byte pulse delta
-	FilterCutoff,		// Set filter cut off frequency bits 3-11
-	FilterResonance,	// Set filter resonance, followed by preshifted byte
-	FilterEnable,		// Enable filter for voice
-	FilterDisable,		// Disable filter for voice
-	FilterMode,			// Filter mode, followed by $10 (lo), $20 (band), $40 (high)
-	FilterDelta,		// Set Filter Frequency Delta followed by signed byte
-	Arpeggio,			// Set arpeggio index for instrument
-	Goto				// Followed by intrument index
-}
+	bsInst_End,				// end of instrument script
+	bsInst_Wait_1,				// want # frames
+	bsInst_Effects = bsMaxInstrumentWait, // instrument effects begin here
+	bsInst_Control = bsInst_Effects, // Control, use for waveform and to trigger release
+	bsInst_Pulse,				// Followed by two bytes pulse width
+	bsInst_PulseDelta,			// Followed by signed byte pulse delta
+	bsInst_FilterCutoff,		// Set filter cut off frequency bits 3-11
+	bsInst_FilterResonance,	// Set filter resonance, followed by preshifted byte
+	bsInst_FilterEnable,		// Enable filter for voice
+	bsInst_FilterDisable,		// Disable filter for voice
+	bsInst_FilterMode,			// Filter mode, followed by $10 (lo), $20 (band), $40 (high)
+	bsInst_FilterDelta,		// Set Filter Frequency Delta followed by signed byte
+	bsInst_Arpeggio,			// Set arpeggio index for instrument
+	bsInst_Goto				// Followed by intrument index
 }
 
 // SONG FUNCTIONS AND MACROS
@@ -234,59 +225,59 @@ bsInst: {
 .function bsPatternNum(track) { (*-track)>>1 }
 
 .macro bsSetInstrument(instrument) {
-	.byte bsCmd.Instrument + instrument
+	.byte bsCmd_Instrument + instrument
 }
 .macro bsPatternWait(frames) {
-	.byte bsCmd.Wait_1 + frames-1
+	.byte bsCmd_Wait_1 + frames-1
 }
 .macro bsPatternEnd() {
-	.byte bsCmd.End
+	.byte bsCmd_End
 }
 .macro bsNote(note) {
 	.byte note
 }
 .macro bsInstEnd() {
-	.byte bsInst.End
+	.byte bsInst_End
 }
 .macro bsInstWait(frames) {
-	.byte bsInst.Wait_1 + frames - 1
+	.byte bsInst_Wait_1 + frames - 1
 }
 .macro bsInstGoto(instrument, where) {
-	.byte bsInst.Goto, where - instrument
+	.byte bsInst_Goto, where - instrument
 }
 
 
 .macro bsInstSetup(waveform, Attack, Decay, Sustain, Release) {
-	.byte bsCtrl.VoiceOn | waveform, (Attack<<4)|Decay, (Sustain<<4)|Release
+	.byte bsCtrl_VoiceOn | waveform, (Attack<<4)|Decay, (Sustain<<4)|Release
 }
 .macro bsInstControl(value) {
-	.byte bsInst.Control, value
+	.byte bsInst_Control, value
 }
 .macro bsInstSetPulse(pulse) {
-	.byte bsInst.Pulse
+	.byte bsInst_Pulse
 	.word pulse
 }
 .macro bsChangeNote(note) {
-	.byte bsCmd.ChangeNote, note
+	.byte bsCmd_ChangeNote, note
 }
 .macro bsInstSetFilterCutoff(freq) {
-	.byte bsInst.FilterCutoff, freq
+	.byte bsInst_FilterCutoff, freq
 }
 .macro bsInstSetFilterResonance(res) {
-	.byte bsInst.FilterResonance, res
+	.byte bsInst_FilterResonance, res
 }
 .macro bsInstFilterEnable() {
-	.byte bsInst.FinterEnable
+	.byte bsInst_FinterEnable
 }
 .macro bsInstSetFilterMode(mode) {
-	.byte bsInst.FilterMode, mode
+	.byte bsInst_FilterMode, mode
 }
 .macro bsInstFilterDelta(delta) {
-	.byte bsInst.FilterDelta, delta
+	.byte bsInst_FilterDelta, delta
 }
 .macro bsInstArpeggio(index) {
-	.byte bsInst.Arpeggio, index
+	.byte bsInst_Arpeggio, index
 }
 .macro bsInstPulseDelta(delta) {
-	.byte bsInst.PulseDelta, delta
+	.byte bsInst_PulseDelta, delta
 }

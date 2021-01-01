@@ -29,20 +29,20 @@ InstrumentsHi:
 	.byte >Instrument0, >Instrument1, >Instrument2
 
 Instrument0:
-	bsInstSetup bsCtrl.Triangle, $6, $6, $6, $8
-	bsInstEnd
+	bsInstSetup(bsCtrl_Triangle, $6, $6, $6, $8)
+	bsInstEnd()
 
 Instrument1:
-	bsInstSetup bsCtrl.SawTooth, $4, $2, $4, $6
-	bsInstWait 8
-	bsInstControl bsCtrl.SawTooth
-	bsInstEnd
+	bsInstSetup(bsCtrl_SawTooth, $4, $2, $4, $6)
+	bsInstWait(8)
+	bsInstControl(bsCtrl_SawTooth)
+	bsInstEnd()
 
 Instrument2:
-	bsInstSetup bsCtrl.SawTooth, $2, $4, $7, $8
-	bsInstWait 16
-	bsInstControl bsCtrl.SawTooth
-	bsInstEnd
+	bsInstSetup(bsCtrl_SawTooth, $2, $4, $7, $8)
+	bsInstWait(16)
+	bsInstControl(bsCtrl_SawTooth)
+	bsInstEnd()
 
 ; This example doesn't support Arpeggios but an arpeggio table would look something like this:
 ; (each byte is added to the note index played, next frame next value is added to original note
@@ -88,170 +88,170 @@ Song0Voice2 = bsPatternNum(VoiceTracks0)
 
 
 Pattern00:
-	bsSetInstrument 0
-	bsNote bsCmd.E_6
-	bsPatternWait 10
-	bsNote bsCmd.A_5
-	bsPatternWait 2
-	bsNote bsCmd.C_6
-	bsPatternWait 2
-	bsNote bsCmd.D_6
-	bsPatternWait 13
-	bsNote bsCmd.G_5
-	bsPatternWait 2
-	bsNote bsCmd.C_6
-	bsPatternWait 2
-	bsNote bsCmd.D_6
-	bsPatternWait 2
-	bsNote bsCmd.A_5
-	bsPatternWait 16
-	bsNote bsCmd.A_5
-	bsPatternWait 16
-	bsPatternEnd
+	bsSetInstrument(0)
+	bsNote(bsCmd_E_6)
+	bsPatternWait(10)
+	bsNote(bsCmd_A_5)
+	bsPatternWait(2)
+	bsNote(bsCmd_C_6)
+	bsPatternWait(2)
+	bsNote(bsCmd_D_6)
+	bsPatternWait(13)
+	bsNote(bsCmd_G_5)
+	bsPatternWait(2)
+	bsNote(bsCmd_C_6)
+	bsPatternWait(2)
+	bsNote(bsCmd_D_6)
+	bsPatternWait(2)
+	bsNote(bsCmd_A_5)
+	bsPatternWait(16)
+	bsNote(bsCmd_A_5)
+	bsPatternWait(16)
+	bsPatternEnd()
 
 Pattern10:
-	bsPatternWait 10
-	bsNote bsCmd.A_5
-	bsPatternWait 2
-	bsNote bsCmd.E_6
-	bsPatternWait 2
-	bsNote bsCmd.D_6
-	bsPatternWait 12
-	bsNote bsCmd.G_5
-	bsPatternWait 2
-	bsNote bsCmd.C_6
-	bsPatternWait 2
-	bsNote bsCmd.D_6
-	bsPatternWait 2
-	bsNote bsCmd.A_5
-	bsPatternWait 16
-	bsNote bsCmd.G_5
-	bsPatternWait 8
-	bsNote bsCmd.A_5
-	bsPatternWait 8
-	bsPatternEnd
+	bsPatternWait(10)
+	bsNote(bsCmd_A_5)
+	bsPatternWait(2)
+	bsNote(bsCmd_E_6)
+	bsPatternWait(2)
+	bsNote(bsCmd_D_6)
+	bsPatternWait(12)
+	bsNote(bsCmd_G_5)
+	bsPatternWait(2)
+	bsNote(bsCmd_C_6)
+	bsPatternWait(2)
+	bsNote(bsCmd_D_6)
+	bsPatternWait(2)
+	bsNote(bsCmd_A_5)
+	bsPatternWait(16)
+	bsNote(bsCmd_G_5)
+	bsPatternWait(8)
+	bsNote(bsCmd_A_5)
+	bsPatternWait(8)
+	bsPatternEnd()
 
 Pattern01:
-	bsSetInstrument 1
-	bsNote bsCmd.A_5
-	bsPatternWait 1
-	bsNote bsCmd.A_5
-	bsPatternWait 1
-	bsNote bsCmd.A_5
-	bsPatternWait 2
-	bsNote bsCmd.A_5
-	bsPatternWait 2
-	bsNote bsCmd.A_5
-	bsPatternWait 1
-	bsNote bsCmd.A_5
-	bsPatternWait 2
-	bsNote bsCmd.A_5
-	bsPatternWait 1
-	bsNote bsCmd.A_5
-	bsPatternWait 2
-	bsNote bsCmd.A_5
-	bsPatternWait 2
-	bsNote bsCmd.A_5
-	bsPatternWait 2
-	bsNote bsCmd.G_5 ; 16
-	bsPatternWait 1
-	bsNote bsCmd.G_5
-	bsPatternWait 1
-	bsNote bsCmd.G_5
-	bsPatternWait 2
-	bsNote bsCmd.G_5
-	bsPatternWait 2
-	bsNote bsCmd.G_5
-	bsPatternWait 1
-	bsNote bsCmd.G_5
-	bsPatternWait 2
-	bsNote bsCmd.G_5
-	bsPatternWait 1
-	bsNote bsCmd.G_5
-	bsPatternWait 2
-	bsNote bsCmd.G_5
-	bsPatternWait 2
-	bsNote bsCmd.G_5
-	bsPatternWait 2
-	bsNote bsCmd.D_5 ; 32
-	bsPatternWait 1
-	bsNote bsCmd.D_5
-	bsPatternWait 1
-	bsNote bsCmd.D_5
-	bsPatternWait 2
-	bsNote bsCmd.D_5
-	bsPatternWait 2
-	bsNote bsCmd.D_5
-	bsPatternWait 1
-	bsNote bsCmd.D_5
-	bsPatternWait 2
-	bsNote bsCmd.D_5
-	bsPatternWait 1
-	bsNote bsCmd.D_5
-	bsPatternWait 2
-	bsNote bsCmd.D_5
-	bsPatternWait 2
-	bsNote bsCmd.D_5
-	bsPatternWait 2
-	bsNote bsCmd.F_5 ; 48
-	bsPatternWait 1
-	bsNote bsCmd.F_5
-	bsPatternWait 1
-	bsNote bsCmd.F_5
-	bsPatternWait 2
-	bsNote bsCmd.F_5
-	bsPatternWait 2
-	bsNote bsCmd.F_5
-	bsPatternWait 1
-	bsNote bsCmd.F_5
-	bsPatternWait 2
-	bsNote bsCmd.F_5
-	bsPatternWait 1
-	bsNote bsCmd.F_5
-	bsPatternWait 2
-	bsNote bsCmd.F_5
-	bsPatternWait 2
-	bsNote bsCmd.F_5
-	bsPatternWait 2
-	bsPatternEnd
+	bsSetInstrument(1)
+	bsNote(bsCmd_A_5)
+	bsPatternWait(1)
+	bsNote(bsCmd_A_5)
+	bsPatternWait(1)
+	bsNote(bsCmd_A_5)
+	bsPatternWait(2)
+	bsNote(bsCmd_A_5)
+	bsPatternWait(2)
+	bsNote(bsCmd_A_5)
+	bsPatternWait(1)
+	bsNote(bsCmd_A_5)
+	bsPatternWait(2)
+	bsNote(bsCmd_A_5)
+	bsPatternWait(1)
+	bsNote(bsCmd_A_5)
+	bsPatternWait(2)
+	bsNote(bsCmd_A_5)
+	bsPatternWait(2)
+	bsNote(bsCmd_A_5)
+	bsPatternWait(2)
+	bsNote(bsCmd_G_5) ; 16
+	bsPatternWait(1)
+	bsNote(bsCmd_G_5)
+	bsPatternWait(1)
+	bsNote(bsCmd_G_5)
+	bsPatternWait(2)
+	bsNote(bsCmd_G_5)
+	bsPatternWait(2)
+	bsNote(bsCmd_G_5)
+	bsPatternWait(1)
+	bsNote(bsCmd_G_5)
+	bsPatternWait(2)
+	bsNote(bsCmd_G_5)
+	bsPatternWait(1)
+	bsNote(bsCmd_G_5)
+	bsPatternWait(2)
+	bsNote(bsCmd_G_5)
+	bsPatternWait(2)
+	bsNote(bsCmd_G_5)
+	bsPatternWait(2)
+	bsNote(bsCmd_D_5) ; 32
+	bsPatternWait(1)
+	bsNote(bsCmd_D_5)
+	bsPatternWait(1)
+	bsNote(bsCmd_D_5)
+	bsPatternWait(2)
+	bsNote(bsCmd_D_5)
+	bsPatternWait(2)
+	bsNote(bsCmd_D_5)
+	bsPatternWait(1)
+	bsNote(bsCmd_D_5)
+	bsPatternWait(2)
+	bsNote(bsCmd_D_5)
+	bsPatternWait(1)
+	bsNote(bsCmd_D_5)
+	bsPatternWait(2)
+	bsNote(bsCmd_D_5)
+	bsPatternWait(2)
+	bsNote(bsCmd_D_5)
+	bsPatternWait(2)
+	bsNote(bsCmd_F_5) ; 48
+	bsPatternWait(1)
+	bsNote(bsCmd_F_5)
+	bsPatternWait(1)
+	bsNote(bsCmd_F_5)
+	bsPatternWait(2)
+	bsNote(bsCmd_F_5)
+	bsPatternWait(2)
+	bsNote(bsCmd_F_5)
+	bsPatternWait(1)
+	bsNote(bsCmd_F_5)
+	bsPatternWait(2)
+	bsNote(bsCmd_F_5)
+	bsPatternWait(1)
+	bsNote(bsCmd_F_5)
+	bsPatternWait(2)
+	bsNote(bsCmd_F_5)
+	bsPatternWait(2)
+	bsNote(bsCmd_F_5)
+	bsPatternWait(2)
+	bsPatternEnd()
 
 Pattern02:
-	bsSetInstrument 0
-	bsNote bsCmd.A_5
-	bsPatternWait 50
-	bsSetInstrument 2
-	bsNote bsCmd.A_4
-	bsPatternWait 2
-	bsNote bsCmd.D_5
-	bsPatternWait 2
-	bsNote bsCmd.A_5
-	bsPatternWait 2
-	bsNote bsCmd.G_5
-	bsPatternWait 2
-	bsNote bsCmd.F_5
-	bsPatternWait 2
-	bsNote bsCmd.E_5
-	bsPatternWait 2
-	bsNote bsCmd.F_5
-	bsPatternWait 2
-	bsPatternEnd
+	bsSetInstrument(0)
+	bsNote(bsCmd_A_5)
+	bsPatternWait(50)
+	bsSetInstrument(2)
+	bsNote(bsCmd_A_4)
+	bsPatternWait(2)
+	bsNote(bsCmd_D_5)
+	bsPatternWait(2)
+	bsNote(bsCmd_A_5)
+	bsPatternWait(2)
+	bsNote(bsCmd_G_5)
+	bsPatternWait(2)
+	bsNote(bsCmd_F_5)
+	bsPatternWait(2)
+	bsNote(bsCmd_E_5)
+	bsPatternWait(2)
+	bsNote(bsCmd_F_5)
+	bsPatternWait(2)
+	bsPatternEnd()
 
 Pattern12:
-	bsNote bsCmd.E_5
-	bsPatternWait 1
-	bsNote bsCmd.E_5
-	bsPatternWait 2
-	bsNote bsCmd.D_5
-	bsPatternWait 1
-	bsNote bsCmd.E_5
-	bsPatternWait 1
-	bsNote bsCmd.D_5
-	bsPatternWait 1
-	bsNote bsCmd.C_5
-	bsPatternWait 1
-	bsNote bsCmd.A_4
-	bsPatternWait 4
-	bsSetInstrument 0
-	bsNote bsCmd.A_5
-	bsPatternWait 52
-	bsPatternEnd
+	bsNote(bsCmd_E_5)
+	bsPatternWait(1)
+	bsNote(bsCmd_E_5)
+	bsPatternWait(2)
+	bsNote(bsCmd_D_5)
+	bsPatternWait(1)
+	bsNote(bsCmd_E_5)
+	bsPatternWait(1)
+	bsNote(bsCmd_D_5)
+	bsPatternWait(1)
+	bsNote(bsCmd_C_5)
+	bsPatternWait(1)
+	bsNote(bsCmd_A_4)
+	bsPatternWait(4)
+	bsSetInstrument(0)
+	bsNote(bsCmd_A_5)
+	bsPatternWait(52)
+	bsPatternEnd()
