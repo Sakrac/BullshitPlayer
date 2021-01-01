@@ -70,21 +70,18 @@ VoiceTracksHi:
 	.byte >VoiceTrack0, >VoiceTrack1, >VoiceTrack2
 
 VoiceTrack0:
-Song0Voice0 = 0
 	.word Pattern00
 	.word Pattern10
-	.word Song0Voice0
+	.word 0 ; restart on first pattern
 
 VoiceTrack1:
-Song0Voice1 = 0
 	.word Pattern01
-	.word Song0Voice1
+	.word 0 ; restart on first pattern
 
 VoiceTrack2:
-Song0Voice2 = 0
 	.word Pattern02
 	.word Pattern12
-	.word Song0Voice2
+	.word 0 ; restart on first pattern
 
 
 Pattern00:
