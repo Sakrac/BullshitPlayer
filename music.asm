@@ -349,7 +349,7 @@ loopInstrumentCommands:
 		lda (bsZPInstrument),y
 		beq end
 		iny
-		cmp #bsInst.Effects
+		cmp #bsInst_Effects
 		bcs effects	// wait command, exit and store wait
 end:	jmp escInstrumentCommands // end or wait command
 effects:
@@ -359,7 +359,7 @@ effects:
 		sta SIDControl,x	// KeyOff etc.
 		bne loopInstrumentCommands
 notControl:
-		cmp #bsInst.Pulse
+		cmp #bsInst_Pulse
 		bne notPulse
 		lda (bsZPInstrument),y
 		sta SIDPulse,x
@@ -382,7 +382,7 @@ notControl:
 }
 notPulse:
 .if (bsPulseDeltaSupport!=0) {
-		cmp #bsInst.PulseDelta
+		cmp #bsInst_PulseDelta
 		bne notPulseDelta
 		ldx bsTmpSaveVoice
 		lda (bsZPInstrument),y
@@ -392,7 +392,7 @@ notPulse:
 }
 notPulseDelta:
 .if (bsFilterSupport!=0) {
-		cmp #bsInst.FilterCutoff
+		cmp #bsInst_FilterCutoff
 		bne notFilterCutoff
 		lda #0
 		sta bsFilterFreq	// clear lower 3 bits
@@ -405,7 +405,7 @@ notPulseDelta:
 }
 notFilterCutoff:
 .if (bsFilterSupport!=0) {
-		cmp #bsInst.FilterResonance
+		cmp #bsInst_FilterResonance
 		bne notFilterResonance
 		lda bsFilterResonanceVoiceEnable
 		and #$0f
@@ -417,7 +417,7 @@ notFilterCutoff:
 }
 notFilterResonance:
 .if (bsFilterSupport!=0) {
-		cmp #bsInst.FilterEnable
+		cmp #bsInst_FilterEnable
 		bne notFilterEnable
 		ldx bsTmpSaveVoice
 		lda bsBitSet,x
@@ -431,7 +431,7 @@ setSIDFilterControl:
 }
 notFilterEnable:
 .if (bsFilterSupport!=0) {
-		cmp #bsInst.FilterDisable
+		cmp #bsInst_FilterDisable
 		bne notFilterDisable
 		ldx bsTmpSaveVoice
 		lda bsBitClr,x
@@ -440,7 +440,7 @@ notFilterEnable:
 }
 notFilterDisable:
 .if (bsFilterSupport!=0) {
-		cmp #bsInst.FilterMode
+		cmp #bsInst_FilterMode
 		bne notFilterMode
 		lda (bsZPInstrument),y
 		sta bsFilterMode
@@ -451,7 +451,7 @@ notFilterDisable:
 }
 notFilterMode:
 .if (bsFilterDeltaSupport!=0) {
-		cmp #bsInst.FilterDelta
+		cmp #bsInst_FilterDelta
 		bne notFilterDelta
 		lda (bsZPInstrument),y
 		sta bsFilterDelta
@@ -460,7 +460,7 @@ notFilterMode:
 }
 notFilterDelta:
 .if (bsArpeggioSupport!=0) {
-		cmp #bsInst.Arpeggio
+		cmp #bsInst_Arpeggio
 		bne notArpeggio
 		lda (bsZPInstrument),y
 		iny
@@ -469,7 +469,7 @@ notFilterDelta:
 		jmp resetSIDOffset
 }
 notArpeggio:
-		cmp #bsInst.Goto
+		cmp #bsInst_Goto
 		bne notGoto
 		ldx bsTmpSaveVoice
 		lda (bsZPInstrument),y
