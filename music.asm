@@ -541,19 +541,19 @@ restartSong:
 		bpl restartSong
 notPatternEnd:
 		iny
-		cmp #bsCmd.NotesEnd
+		cmp #bsCmd_NotesEnd
 		bcs notNote
 		jsr bsTriggerInstrument
 		jmp loopTrackerCommands
 notNote:
-		cmp #bsCmd.ChangeNote
+		cmp #bsCmd_ChangeNote
 		bcs notInstrument
-		sbc #bsCmd.Instrument-1 // C clear so subtract one less
+		sbc #bsCmd_Instrument-1 // C clear so subtract one less
 		sta bsVoiceInstrument,x
 		bcs loopTrackerCommands
 notInstrument:
 .if (bsChangeNoteSupport!=0) {
-		//cmp #bsCmd.ChangeNote
+		//cmp #bsCmd_ChangeNote
 		bne notChangeNote
 		stx restoreVoiceIndex
 		lda bsSIDVoiceRegOffs,x
@@ -586,7 +586,7 @@ notInstrument:
 notChangeNote:
 waitCmd:
 		// C set
-		sbc #bsCmd.Wait_1-1
+		sbc #bsCmd_Wait_1-1
 		sta bsPatternVoiceWait,x
 		tya
 		sta bsVoicePatternIndex,x

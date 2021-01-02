@@ -59,7 +59,7 @@ const bsNoteCache = bsArpeggioSupport
 ; 1: Remember lsat pulse width for pulse slide etc.
 const bsPulseCache = bsPulseDeltaSupport
 ; using filters
-const bsFilterSupport = 1 || bsFilterDeltaSupport
+const bsFilterSupport = 0
 
 ; Hard coded constants
 const bsMusicVoices = 3 	; # voices controlled by tracks & patterns

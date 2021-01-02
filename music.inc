@@ -67,7 +67,7 @@
 // 1: Remember lsat pulse width for pulse slide etc.
 .const bsPulseCache = bsPulseDeltaSupport
 // using filters
-.const bsFilterSupport = 1 || bsFilterDeltaSupport
+.const bsFilterSupport = 0
 
 // Hard coded constants
 .const bsMusicVoices = 3 	// # voices controlled by tracks & patterns
@@ -195,16 +195,18 @@
 	bsCmd_A_8,
 	bsCmd_As8,
 	bsCmd_B_8,
-	bsCmd_Instrument, // change instrument for this voice
+	bsCmd_NotesEnd
 }
-.const bsCmd_ChangeNote = bsCmd_Instrument + bsMaxInstruments, // 1+number of notes+number of instruments Change note without restarting instrument
+
+.const bsCmd_Instrument = bsCmd_NotesEnd // change instrument for this voice
+.const bsCmd_ChangeNote = bsCmd_Instrument + bsMaxInstruments // 1+number of notes+number of instruments Change note without restarting instrument
 .const bsCmd_Wait_1 = bsCmd_ChangeNote + 1
 
 
 // Instrument Commands
 .enum {
 	bsInst_End,					// end of instrument script
-	bsInst_Wait_1,				// want # frames
+	bsInst_Wait_1				// want # frames
 }
 
 .const bsInst_Effects = 192								// (max instrument wait) instrument effects begin here
