@@ -56,7 +56,7 @@
 
 // Flags to enable/disable features
 .const bsPulseDeltaSupport = 0			// enables bsInst_PulseDelta instrument command
-.const bsArpeggioSupport = 0				// enables bsInst_Arpeggio instrument command and requires an ArpeggioTable to be defined
+.const bsArpeggioSupport = 0			// enables bsInst_Arpeggio instrument command and requires an ArpeggioTable to be defined
 .const bsFilterDeltaSupport = 0			// enables bsInst_FilterDelta instrument command
 .const bsChangeNoteSupport = 0			// enables bsCmd_ChangeNote track command (changes note without restarting instrument)
 
@@ -99,8 +99,7 @@
 // pattern commands (unused notes can be removed as long as FreqTablePalLo & FreqTablePalHi matches with order)
 .enum {
 	bsCmd_End,	// end pattern / 
-	bsCmd_Notes, // start of notes
-	bsCmd_C_1 = 1,	// 0 is end
+	bsCmd_C_1,	// 0 is end
 	bsCmd_Cs1,
 	bsCmd_D_1,
 	bsCmd_Ds1,
@@ -197,27 +196,29 @@
 	bsCmd_As8,
 	bsCmd_B_8,
 	bsCmd_Instrument, // change instrument for this voice
-	bsCmd_ChangeNote = 129, // 1+number of notes+number of instruments Change note without restarting instrument
-	bsCmd_Wait_1
 }
+.const bsCmd_ChangeNote = bsCmd_Instrument + bsMaxInstruments, // 1+number of notes+number of instruments Change note without restarting instrument
+.const bsCmd_Wait_1 = bsCmd_ChangeNote + 1
+
 
 // Instrument Commands
 .enum {
-	bsInst_End,				// end of instrument script
+	bsInst_End,					// end of instrument script
 	bsInst_Wait_1,				// want # frames
-	bsInst_Effects = 192, // (max instrument wait) instrument effects begin here
-	bsInst_Control = 192, // Control, use for waveform and to trigger release
-	bsInst_Pulse,				// Followed by two bytes pulse width
-	bsInst_PulseDelta,			// Followed by signed byte pulse delta
-	bsInst_FilterCutoff,		// Set filter cut off frequency bits 3-11
-	bsInst_FilterResonance,	// Set filter resonance, followed by preshifted byte
-	bsInst_FilterEnable,		// Enable filter for voice
-	bsInst_FilterDisable,		// Disable filter for voice
-	bsInst_FilterMode,			// Filter mode, followed by $10 (lo), $20 (band), $40 (high)
-	bsInst_FilterDelta,		// Set Filter Frequency Delta followed by signed byte
-	bsInst_Arpeggio,			// Set arpeggio index for instrument
-	bsInst_Goto				// Followed by intrument index
 }
+
+.const bsInst_Effects = 192								// (max instrument wait) instrument effects begin here
+.const bsInst_Control = bsInst_Effects 					// Control, use for waveform and to trigger release
+.const bsInst_Pulse = bsInst_Control + 1				// Followed by two bytes pulse width
+.const bsInst_PulseDelta = bsInst_Pulse + 1				// Followed by signed byte pulse delta
+.const bsInst_FilterCutoff = bsInst_PulseDelta + 1 		// Set filter cut off frequency bits 3-11
+.const bsInst_FilterResonance = bsInst_FilterCutoff + 1	// Set filter resonance, followed by preshifted byte
+.const bsInst_FilterEnable = bsInst_FilterResonance + 1	// Enable filter for voice
+.const bsInst_FilterDisable = bsInst_FilterEnable + 1	// Disable filter for voice
+.const bsInst_FilterMode = bsInst_FilterDisable + 1		// Filter mode, followed by $10 (lo), $20 (band), $40 (high)
+.const bsInst_FilterDelta = bsInst_FilterMode + 1		// Set Filter Frequency Delta followed by signed byte
+.const bsInst_Arpeggio = bsInst_FilterDelta + 1			// Set arpeggio index for instrument
+.const bsInst_Goto = bsInst_Arpeggio + 1				// Followed by intrument index
 
 // SONG FUNCTIONS AND MACROS
 
